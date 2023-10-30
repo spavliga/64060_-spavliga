@@ -1,0 +1,79 @@
+---
+title: "Untitled"
+output: pdf_document
+date: "2023-10-30"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r Pharmaceuticals}
+
+Pharmaceuticals <- read.csv("C:\\Users\\13308\\OneDrive\\Documents\\64060_-spavliga\\Pharmaceuticals.csv")
+
+#A
+
+data.df <- Pharmaceuticals
+
+
+data.df <- data.df[,-14]
+data.df <- data.df[,-13]
+data.df <- data.df[,-12]
+data.df <- data.df[,-1]
+data.df <- data.df[,-1]
+str(data.df)
+
+datanorm <- sapply(data.df, scale)
+
+str(datanorm)
+
+library(factoextra)
+library(flexclust)
+
+fviz_nbclust(datanorm, FUNcluster = hcut, method = "wss")
+
+k <- 2
+
+datanormkmeans <- kmeans(datanorm, centers = k)
+datanormkmeans
+
+fviz_cluster(datanormkmeans, data = datanorm)
+
+# Based on the results of the fviz_nbclust function (elbow method), 2 clusters  
+# appeared to be the best option. Beyond
+# preprocessing the data, I took a more straightfoward approach. I just used  
+# euclidean distance (default for kmeans()) as given
+# the nature of our data, there isn't really a need for anything beyond it.
+
+#B
+# As a whole, cluster 1 appears to be characterized by being more profitable and 
+# generally healthier than cluster 2. Specifically noting the values of
+# Market_Cap, ROE, ROA and Net_Profit_Margin, cluster 1 appears to be better 
+# performing than cluster 2. The only exception is Rev_Growth, but 
+# Net_Profit_Margin also favors cluster 1.
+
+#C
+# There does not appear to be any patterns, however it is worth noting that the 
+# 4 "Sells" in median recommendations are split equally between the two clusters. 
+# Based on the k-means results, I would have anticipated the "Sells" favoring
+# cluster 2. There were no notable findings in location or exchange.
+
+#D
+# As a whole, the companies in cluster 1 are characterized by better 
+# performances in all areas aside from estimated revenue growth. 
+# Overall, I would name cluster 1 "High performing, high profit companies." 
+# Cluster 2 is characterized by lower profit margins,
+# lower market cap, lower asset turnover, higher beta and so on. While
+# the estimated revenue growth does favor cluster 2, only 1 out of 9 variables 
+# measured indicates cluster 2 performing better than cluster 1. In contrast to
+# cluster 1's name, I would name cluster 2 "Lower performing, lower
+# profit companies."
+
+```
